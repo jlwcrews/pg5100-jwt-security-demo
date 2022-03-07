@@ -1,9 +1,9 @@
 package no.jlwcrews.jwtdemo.security.filter
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.jlwcrews.jwtdemo.security.jwt.JwtUtil
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -15,10 +15,8 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class CustomAuthorizationFilter : OncePerRequestFilter() {
+class CustomAuthorizationFilter(@Autowired private val jwtUtil: JwtUtil) : OncePerRequestFilter() {
 
-    private val SECRET = "do_not_put_secrets_in_source_code"
-    private val algorithm = Algorithm.HMAC256(SECRET)
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun doFilterInternal(
@@ -34,8 +32,7 @@ class CustomAuthorizationFilter : OncePerRequestFilter() {
             else -> {
                 try {
                     val token = authorizationHeader.substring(7)
-                    val jwtVerifier = JWT.require(algorithm).build()
-                    val decodedToken = jwtVerifier.verify(token)
+                    val decodedToken = jwtUtil.decodeToken(token)
                     val email = decodedToken.subject
                     val authority =
                         decodedToken.getClaim("authorities").asList(String::class.java).map { SimpleGrantedAuthority(it) }

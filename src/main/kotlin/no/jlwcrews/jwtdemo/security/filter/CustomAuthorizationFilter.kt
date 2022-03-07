@@ -15,7 +15,7 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class CustomAuthorizationFilter(@Autowired private val jwtUtil: JwtUtil) : OncePerRequestFilter() {
+class CustomAuthorizationFilter : OncePerRequestFilter() {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -32,7 +32,7 @@ class CustomAuthorizationFilter(@Autowired private val jwtUtil: JwtUtil) : OnceP
             else -> {
                 try {
                     val token = authorizationHeader.substring(7)
-                    val decodedToken = jwtUtil.decodeToken(token)
+                    val decodedToken = JwtUtil.decodeToken(token)
                     val email = decodedToken.subject
                     val authority =
                         decodedToken.getClaim("authorities").asList(String::class.java).map { SimpleGrantedAuthority(it) }

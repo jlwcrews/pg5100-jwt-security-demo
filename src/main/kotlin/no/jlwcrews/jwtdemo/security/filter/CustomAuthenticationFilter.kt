@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class CustomAuthenticationFilter(
-    @Autowired private val authManager: AuthenticationManager,
-    @Autowired private val jwtUtil: JwtUtil
-    ) :
+    @Autowired private val authManager: AuthenticationManager) :
     UsernamePasswordAuthenticationFilter() {
 
     override fun attemptAuthentication(request: HttpServletRequest?, response: HttpServletResponse?): Authentication {
@@ -34,8 +32,8 @@ class CustomAuthenticationFilter(
         authentication: Authentication?
     ) {
         val user: User = authentication?.principal as User
-        val accessToken = jwtUtil.createToken(user, request?.requestURL.toString())
-        val refreshToken = jwtUtil.createToken(user, request?.requestURL.toString())
+        val accessToken = JwtUtil.createToken(user, request?.requestURL.toString())
+        val refreshToken = JwtUtil.createToken(user, request?.requestURL.toString())
         val tokens = mapOf("access_token" to accessToken, "refresh_token" to refreshToken)
         response?.contentType = APPLICATION_JSON_VALUE
         response?.addCookie(Cookie("access_token", accessToken))

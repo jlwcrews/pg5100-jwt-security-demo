@@ -7,8 +7,7 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import java.util.*
 
-@Component
-class JwtUtil {
+object JwtUtil {
 
     private val SECRET = "do_not_store_secrets_in_the_source_code"
 

@@ -4,12 +4,11 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import org.springframework.security.core.userdetails.User
-import org.springframework.stereotype.Component
 import java.util.*
 
 object JwtUtil {
 
-    private val SECRET = "do_not_store_secrets_in_the_source_code"
+    private const val SECRET = "do_not_store_secrets_in_the_source_code"
 
     private val algorithm = Algorithm.HMAC256(SECRET)
 

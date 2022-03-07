@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/localdevdb
+    username: localdevuser
+    password: pirate
+    driverClassName: org.postgresql.Driver
+  sql:
+    init:
+      platform: localdevdb

@@ -12,7 +12,7 @@ class JwtUtil {
 
     private val SECRET = "do_not_store_secrets_in_the_source_code"
 
-    val algorithm = Algorithm.HMAC256(SECRET)
+    private val algorithm = Algorithm.HMAC256(SECRET)
 
     fun createToken(user: User, issuer: String): String {
         return JWT.create()

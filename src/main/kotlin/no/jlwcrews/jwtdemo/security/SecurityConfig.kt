@@ -32,6 +32,7 @@ class SecurityConfig(
         http.sessionManagement().disable()
         http.authorizeRequests()
             .antMatchers("/api/login").permitAll()
+            .antMatchers("/api/register").permitAll()
             .antMatchers("/api/user/**").hasAnyAuthority("USER", "ADMIN")
             .antMatchers("/api/authority/**").hasAuthority("ADMIN")
         http.authorizeRequests().anyRequest().authenticated()

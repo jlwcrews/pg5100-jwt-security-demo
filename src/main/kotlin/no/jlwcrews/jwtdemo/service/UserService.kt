@@ -19,11 +19,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class UserService(
     @Autowired private val userRepo: UserRepo,
-    @Autowired private val authorityRepo: AuthorityRepo,
-    @Autowired private val passwordEncoder: BCryptPasswordEncoder
+    @Autowired private val authorityRepo: AuthorityRepo
     ): UserDetailsService {
-
-    private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun loadUserByUsername(username: String?): UserDetails {
         username?.let {
@@ -35,34 +32,25 @@ class UserService(
 
     fun registerUser(user: RegisterUserDTO): UserEntity {
         val newUser = UserEntity(email = user.email, password = BCryptPasswordEncoder().encode(user.password))
-        logger.info("Registering new user ${newUser.email} with password ${newUser.password}")
         return userRepo.save(newUser)
     }
 
     fun createAuthority(authorityName: AuthorityEntity): AuthorityEntity {
-        logger.info("Creating new authority")
         return authorityRepo.save(authorityName)
-    }
-
-    fun getUserByEmail(email: String): UserEntity? {
-        logger.info("Fetching user")
-        return userRepo.findByEmail(email)
     }
 
     fun grantAuthorityToUser(email: String?, authorityName: String?){
         val user = userRepo.findByEmail(email)
         val authority = authorityRepo.findByName(authorityName)
-        logger.info("Authority ${authority.name} being granted to ${user.email}")
         user.authorities.add(authority)
+        userRepo.save(user)
     }
 
     fun getAuthorities(): List<String?>{
-        logger.info("Retrieving all authorities")
         return authorityRepo.findAll().map { it.name }
     }
 
     fun getUsers(): List<UserEntity>{
-        logger.info("Retrieving all users")
         return userRepo.findAll()
     }
 }

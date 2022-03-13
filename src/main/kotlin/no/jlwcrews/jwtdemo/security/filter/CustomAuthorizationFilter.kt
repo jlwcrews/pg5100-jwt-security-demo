@@ -2,8 +2,6 @@ package no.jlwcrews.jwtdemo.security.filter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.jlwcrews.jwtdemo.security.jwt.JwtUtil
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -16,8 +14,6 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class CustomAuthorizationFilter : OncePerRequestFilter() {
-
-    private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun doFilterInternal(
         request: HttpServletRequest,

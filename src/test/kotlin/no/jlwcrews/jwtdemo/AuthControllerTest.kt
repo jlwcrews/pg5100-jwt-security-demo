@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
@@ -49,6 +51,23 @@ class AuthControllerTest() {
             .andExpect { content { contentType(APPLICATION_JSON) } }
             .andExpect { jsonPath("$.email", "jim@bob.com").exists() }
             .andExpect { jsonPath("$.enable", "true").exists() }
+    }
+
+    @Test
+    fun testLoginEndpoint(){
+
+        val encryptedPassword = BCryptPasswordEncoder().encode("pirate")
+        every { userService.loadUserByUsername("jim@bob.com") } answers {
+            User("jim@bob.com", encryptedPassword, listOf(SimpleGrantedAuthority("ADMIN")))
+        }
+
+        mockMvc.post("/api/login"){
+            param("username", "jim@bob.com")
+            param("password", "pirate")
+            contentType = APPLICATION_JSON
+        }
+            .andExpect { status { isOk() } }
+            .andExpect { jsonPath("$.access_token").exists() }
     }
 
 }

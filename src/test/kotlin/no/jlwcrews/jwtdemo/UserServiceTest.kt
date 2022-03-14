@@ -25,7 +25,6 @@ class UserServiceTest {
         every { userRepo.findAll() } returns listOf(userOne, userTwo)
 
         val userList = userService.getUsers()
-        println(userList)
         assert(userList.size == 2)
         assert(userList[0].userId?.equals(1L) == true)
         assert(userList[1].email.equals("joe@bob.com"))

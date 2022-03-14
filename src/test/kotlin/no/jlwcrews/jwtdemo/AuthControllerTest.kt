@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 
 @ExtendWith(SpringExtension::class)
 @WebMvcTest
-class AuthControllerTest() {
+class AuthControllerTest {
 
     @TestConfiguration
     class ControllerTestConfig {
@@ -55,7 +55,6 @@ class AuthControllerTest() {
 
     @Test
     fun testLoginEndpoint(){
-
         val encryptedPassword = BCryptPasswordEncoder().encode("pirate")
         every { userService.loadUserByUsername("jim@bob.com") } answers {
             User("jim@bob.com", encryptedPassword, listOf(SimpleGrantedAuthority("ADMIN")))
@@ -68,5 +67,20 @@ class AuthControllerTest() {
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("$.access_token").exists() }
+    }
+
+    @Test
+    fun testLoginEndpointWithWrongPasswordShouldFail(){
+        val encryptedPassword = BCryptPasswordEncoder().encode("pirate")
+        every { userService.loadUserByUsername("jim@bob.com") } answers {
+            User("jim@bob.com", encryptedPassword, listOf(SimpleGrantedAuthority("ADMIN")))
+        }
+
+        mockMvc.post("/api/login"){
+            param("username", "jim@bob.com")
+            param("password", "pickle")
+            contentType = APPLICATION_JSON
+        }
+            .andExpect { status { isUnauthorized() } }
     }
 }

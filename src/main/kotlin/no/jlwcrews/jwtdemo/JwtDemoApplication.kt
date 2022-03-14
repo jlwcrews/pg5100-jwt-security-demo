@@ -15,18 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 class JwtDemoApplication {
 
 	@Bean
-	fun init(@Autowired userService: UserService) = CommandLineRunner {
-		val jimbob = RegisterUserDTO(email = "jim@bob.com", password = "pirate")
-		userService.registerUser(jimbob)
-		val joebob = RegisterUserDTO(email = "joe@bob.com", password = "pirate")
-		userService.registerUser(joebob)
-		val userAuthority = userService.createAuthority(AuthorityEntity(name = "USER"))
-		val adminAuthority = userService.createAuthority(AuthorityEntity(name = "ADMIN"))
-		userService.grantAuthorityToUser(jimbob.email, userAuthority.name)
-		userService.grantAuthorityToUser(joebob.email, adminAuthority.name)
-	}
-
-	@Bean
 	fun passwordEncoder(): BCryptPasswordEncoder {
 		return BCryptPasswordEncoder()
 	}

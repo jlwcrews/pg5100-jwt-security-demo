@@ -69,5 +69,4 @@ class AuthControllerTest() {
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("$.access_token").exists() }
     }
-
 }

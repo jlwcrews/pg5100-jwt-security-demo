@@ -2,7 +2,6 @@ package no.jlwcrews.jwtdemo.security.filter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.jlwcrews.jwtdemo.security.jwt.JwtUtil
-import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -20,15 +19,13 @@ class CustomAuthorizationFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val authorizationHeader = request.getHeader(AUTHORIZATION)
+        val tokenFromCookie = request.cookies.first { it.name == "access_token" }.value
         when {
-            authorizationHeader.isNullOrBlank() -> filterChain.doFilter(request, response)
-            !authorizationHeader.startsWith("Bearer ") -> filterChain.doFilter(request, response)
+            tokenFromCookie.isNullOrBlank() -> filterChain.doFilter(request, response)
             request.servletPath.contains("/api/login") -> filterChain.doFilter(request, response)
             else -> {
                 try {
-                    val token = authorizationHeader.substring(7)
-                    val decodedToken = JwtUtil.decodeToken(token)
+                    val decodedToken = JwtUtil.decodeToken(tokenFromCookie)
                     val email = decodedToken.subject
                     val authority =
                         decodedToken.getClaim("authorities").asList(String::class.java).map { SimpleGrantedAuthority(it) }

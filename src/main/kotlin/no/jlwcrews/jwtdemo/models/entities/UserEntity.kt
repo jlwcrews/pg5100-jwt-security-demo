@@ -1,8 +1,5 @@
 package no.jlwcrews.jwtdemo.models.entities
 
-import no.jlwcrews.jwtdemo.models.entities.AuthorityEntity
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -10,7 +7,11 @@ import javax.persistence.*
 @Table(name = "users")
 class UserEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_user_id_seq")
+    @SequenceGenerator(
+        name = "users_user_id_seq",
+        allocationSize = 1
+    )
     @Column(name = "user_id", nullable = false)
     val userId: Long? = null,
 

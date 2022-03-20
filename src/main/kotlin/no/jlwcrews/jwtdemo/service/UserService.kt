@@ -4,7 +4,6 @@ import no.jlwcrews.jwtdemo.models.entities.AuthorityEntity
 import no.jlwcrews.jwtdemo.models.entities.UserEntity
 import no.jlwcrews.jwtdemo.repos.AuthorityRepo
 import no.jlwcrews.jwtdemo.repos.UserRepo
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -13,10 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Transactional
 class UserService(
     @Autowired private val userRepo: UserRepo,
     @Autowired private val authorityRepo: AuthorityRepo

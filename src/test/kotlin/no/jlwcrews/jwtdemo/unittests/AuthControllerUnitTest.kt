@@ -8,19 +8,20 @@ import no.jlwcrews.jwtdemo.service.UserService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType.APPLICATION_JSON
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
 @ExtendWith(SpringExtension::class)
 @WebMvcTest
+@AutoConfigureMockMvc(addFilters = false)
 class AuthControllerUnitTest {
 
     @TestConfiguration
@@ -51,32 +52,16 @@ class AuthControllerUnitTest {
     }
 
     @Test
-    fun testLoginEndpoint(){
-        val encryptedPassword = BCryptPasswordEncoder().encode("pirate")
-        every { userService.loadUserByUsername("jim@bob.com") } answers {
-            User("jim@bob.com", encryptedPassword, listOf(SimpleGrantedAuthority("ADMIN")))
+    fun testAuthorityAllEndpoint() {
+        every { userService.getAuthorities() } answers {
+            listOf("ADMIN", "USER")
         }
 
-        mockMvc.post("/api/login"){
-            contentType = APPLICATION_JSON
-            content = "{\"username\":\"jim@bob.com\", \"password\":\"pirate\"}"
+        mockMvc.get("/api/authority/all") {
         }
             .andExpect { status { isOk() } }
-            .andExpect { cookie { exists("access_token")} }
-
-    }
-
-    @Test
-    fun testLoginEndpointWithWrongPasswordShouldFail(){
-        val encryptedPassword = BCryptPasswordEncoder().encode("pirate")
-        every { userService.loadUserByUsername("jim@bob.com") } answers {
-            User("jim@bob.com", encryptedPassword, listOf(SimpleGrantedAuthority("ADMIN")))
-        }
-
-        mockMvc.post("/api/login"){
-            contentType = APPLICATION_JSON
-            content = "{\"username\":\"jim@bob.com\", \"password\":\"popsicle\"}"
-        }
-            .andExpect { status { isUnauthorized() } }
+            .andExpect {
+                jsonPath("$") { isArray() }
+            }
     }
 }

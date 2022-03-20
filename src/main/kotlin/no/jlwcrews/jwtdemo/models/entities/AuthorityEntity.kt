@@ -6,7 +6,11 @@ import javax.persistence.*
 @Table(name = "authorities")
 class AuthorityEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "authorities_authority_id_seq")
+    @SequenceGenerator(
+        name = "authorities_authority_id_seq",
+        allocationSize = 1
+    )
     @Column(name = "authority_id")
     val id: Long? = null,
 

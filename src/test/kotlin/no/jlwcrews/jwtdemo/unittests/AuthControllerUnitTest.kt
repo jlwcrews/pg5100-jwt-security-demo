@@ -1,4 +1,4 @@
-package no.jlwcrews.jwtdemo
+package no.jlwcrews.jwtdemo.unittests
 
 import io.mockk.every
 import io.mockk.mockk
@@ -18,11 +18,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 
 @ExtendWith(SpringExtension::class)
 @WebMvcTest
-class AuthControllerTest {
+class AuthControllerUnitTest {
 
     @TestConfiguration
     class ControllerTestConfig {
@@ -49,8 +48,6 @@ class AuthControllerTest {
         }
             .andExpect { status { isCreated() } }
             .andExpect { content { contentType(APPLICATION_JSON) } }
-            .andExpect { jsonPath("$.email", "jim@bob.com").exists() }
-            .andExpect { jsonPath("$.enable", "true").exists() }
     }
 
     @Test
@@ -61,12 +58,12 @@ class AuthControllerTest {
         }
 
         mockMvc.post("/api/login"){
-            param("username", "jim@bob.com")
-            param("password", "pirate")
             contentType = APPLICATION_JSON
+            content = "{\"username\":\"jim@bob.com\", \"password\":\"pirate\"}"
         }
             .andExpect { status { isOk() } }
-            .andExpect { jsonPath("$.access_token").exists() }
+            .andExpect { cookie { exists("access_token")} }
+
     }
 
     @Test
@@ -77,9 +74,8 @@ class AuthControllerTest {
         }
 
         mockMvc.post("/api/login"){
-            param("username", "jim@bob.com")
-            param("password", "pickle")
             contentType = APPLICATION_JSON
+            content = "{\"username\":\"jim@bob.com\", \"password\":\"popsicle\"}"
         }
             .andExpect { status { isUnauthorized() } }
     }

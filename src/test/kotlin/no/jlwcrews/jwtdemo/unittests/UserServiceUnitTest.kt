@@ -1,4 +1,4 @@
-package no.jlwcrews.jwtdemo
+package no.jlwcrews.jwtdemo.unittests
 
 import io.mockk.every
 import io.mockk.mockk
@@ -11,7 +11,7 @@ import no.jlwcrews.jwtdemo.service.UserService
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-class UserServiceTest {
+class UserServiceUnitTest {
 
     private val userRepo = mockk<UserRepo>()
     private val authorityRepo = mockk<AuthorityRepo>()

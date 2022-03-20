@@ -19,7 +19,7 @@ class CustomAuthorizationFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val tokenFromCookie = request.cookies.first { it.name == "access_token" }.value
+        val tokenFromCookie = request.cookies?.first { it.name == "access_token" }?.value
         when {
             tokenFromCookie.isNullOrBlank() -> filterChain.doFilter(request, response)
             request.servletPath.contains("/api/login") -> filterChain.doFilter(request, response)

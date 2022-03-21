@@ -29,6 +29,7 @@ class UserService(
 
     fun registerUser(user: RegisterUserDTO): UserEntity {
         val newUser = UserEntity(email = user.email, password = BCryptPasswordEncoder().encode(user.password))
+        newUser.authorities.add(AuthorityEntity(1, "USER"))
         return userRepo.save(newUser)
     }
 
